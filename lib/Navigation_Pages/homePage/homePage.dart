@@ -5,7 +5,7 @@ import 'views/current_temperature.dart';
 import 'views/current_windSpeed.dart';
 import 'Services/weather_api_client.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:weather/weather.dart';
+import 'model/weather_model.dart';
 
 class homePage extends StatefulWidget {
   const homePage({super.key});
@@ -19,7 +19,7 @@ class _homePageState extends State<homePage> {
   Weather? data;
 
   Future<void> getData() async {
-    data = (await client.getCurrentWeather('Georgia')) as Weather?;
+    data = await client.getCurrentWeather('Georgia');
   }
 
   @override
@@ -31,7 +31,6 @@ class _homePageState extends State<homePage> {
           if (snapshot.connectionState == ConnectionState.done) {
             return content();
           } else if (snapshot.connectionState == ConnectionState.waiting) {
-            // ignore: prefer_const_constructors
             return Center(
               child: const CircularProgressIndicator(),
             );
@@ -86,7 +85,6 @@ class _homePageState extends State<homePage> {
                     color: const Color(0xFFC00000),
                   )
                 ],
-                // ignore: prefer_const_literals_to_create_immutables
                 pointers: <GaugePointer>[
                   const NeedlePointer(
                     value: 340,
@@ -115,10 +113,9 @@ class _homePageState extends State<homePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
-                // ignore: prefer_const_literals_to_create_immutables
                 children: [
-                  currentTemperature(Icons.wb_sunny_rounded,
-                      "${data!.temperature}", '${data!.areaName}')
+                  currentTemperature(Icons.wb_sunny_rounded, "${data!.temp}",
+                      '${data!.cityName}')
                 ],
               ),
               const Padding(
@@ -129,7 +126,6 @@ class _homePageState extends State<homePage> {
                 ),
               ),
               Column(
-                // ignore: prefer_const_literals_to_create_immutables
                 children: [currentHumidity(Icons.water, "${data!.humidity}")],
               ),
             ],
@@ -142,16 +138,12 @@ class _homePageState extends State<homePage> {
             color: Colors.grey,
           ),
         ),
-        // Divider(),
         IntrinsicHeight(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  currentWindSpeed(Icons.wind_power, "${data!.windSpeed}")
-                ],
+                children: [currentWindSpeed(Icons.wind_power, "${data!.wind}")],
               ),
               const Padding(
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -161,7 +153,6 @@ class _homePageState extends State<homePage> {
                 ),
               ),
               Column(
-                // ignore: prefer_const_literals_to_create_immutables
                 children: [currentAirPressure(Icons.air, "${data!.pressure}")],
               ),
             ],
